@@ -27,6 +27,11 @@ public class ProductoController {
         return productoService.buscarPorId(id);
     }
 
+    @GetMapping("/categoria/{categoriaId}")
+    public List<Producto> listarPorCategoria(@PathVariable Integer categoriaId) {
+        return productoService.listarPorCategoria(categoriaId);
+    }
+
     @PostMapping
     public Producto guardar(@RequestBody ProductoRequestDTO dto) {
         return productoService.guardar(dto);
