@@ -1,5 +1,7 @@
 package ni.edu.uam.gestion_productos.service;
 
+import ni.edu.uam.gestion_productos.dto.ProductoRequestDTO;
+import ni.edu.uam.gestion_productos.entity.Categoria;
 import ni.edu.uam.gestion_productos.entity.Producto;
 import ni.edu.uam.gestion_productos.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
@@ -9,41 +11,61 @@ import java.util.List;
 @Service
 public class ProductoService {
 
-    private final ProductoRepository repository;
+    private final ProductoRepository productoRepository;
+    private final CategoriaService categoriaService;
 
-    public ProductoService(ProductoRepository repository) {
-        this.repository = repository;
+    public ProductoService(
+            ProductoRepository productoRepository,
+            CategoriaService categoriaService) {
+
+        this.productoRepository = productoRepository;
+        this.categoriaService = categoriaService;
     }
 
     public List<Producto> listar() {
-        return repository.findAll();
-    }
-
-    public Producto guardar(Producto producto) {
-        return repository.save(producto);
+        return productoRepository.findAll();
     }
 
     public Producto buscarPorId(Integer id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Producto no encontrado con id: " + id
-                ));
+        return productoRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Producto no encontrado con id: " + id));
     }
 
-    public Producto actualizar(Integer id, Producto producto) {
-        Producto productoExistente = buscarPorId(id);
+    public Producto guardar(ProductoRequestDTO dto) {
 
-        productoExistente.setCodigo(producto.getCodigo());
-        productoExistente.setNombre(producto.getNombre());
-        productoExistente.setCategoria(producto.getCategoria());
-        productoExistente.setPrecioVenta(producto.getPrecioVenta());
-        productoExistente.setExistencia(producto.getExistencia());
+        Categoria categoria = categoriaService.buscarPorId(dto.getCategoriaId());
 
-        return repository.save(productoExistente);
+        Producto producto = new Producto();
+
+        producto.setCodigo(dto.getCodigo());
+        producto.setNombre(dto.getNombre());
+        producto.setCategoria(categoria);
+        producto.setPrecioVenta(dto.getPrecioVenta());
+        producto.setExistencia(dto.getExistencia());
+
+        return productoRepository.save(producto);
+    }
+
+    public Producto actualizar(Integer id, ProductoRequestDTO dto) {
+
+        Producto producto = buscarPorId(id);
+
+        Categoria categoria = categoriaService.buscarPorId(dto.getCategoriaId());
+
+        producto.setCodigo(dto.getCodigo());
+        producto.setNombre(dto.getNombre());
+        producto.setCategoria(categoria);
+        producto.setPrecioVenta(dto.getPrecioVenta());
+        producto.setExistencia(dto.getExistencia());
+
+        return productoRepository.save(producto);
     }
 
     public void eliminar(Integer id) {
+
         Producto producto = buscarPorId(id);
-        repository.delete(producto);
+
+        productoRepository.delete(producto);
     }
 }
