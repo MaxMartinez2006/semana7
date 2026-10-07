@@ -35,6 +35,10 @@ public class ProductoService {
         return productoRepository.findByCategoriaId(categoriaId);
     }
 
+    public List<Producto> listarPorEtiqueta(Integer etiquetaId) {
+        return productoRepository.findByEtiquetasId(etiquetaId);
+    }
+
     public Producto buscarPorId(Integer id) {
         return productoRepository.findById(id)
                 .orElseThrow(() ->
