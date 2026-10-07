@@ -28,7 +28,9 @@ public class ProductoController {
     }
 
     @GetMapping("/categoria/{categoriaId}")
-    public List<Producto> listarPorCategoria(@PathVariable Integer categoriaId) {
+    public List<Producto> listarPorCategoria(
+            @PathVariable Integer categoriaId) {
+
         return productoService.listarPorCategoria(categoriaId);
     }
 
@@ -48,5 +50,29 @@ public class ProductoController {
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Integer id) {
         productoService.eliminar(id);
+    }
+
+    // Agregar etiqueta a un producto
+    @PutMapping("/{productoId}/etiquetas/{etiquetaId}")
+    public Producto agregarEtiqueta(
+            @PathVariable Integer productoId,
+            @PathVariable Integer etiquetaId) {
+
+        return productoService.agregarEtiqueta(
+                productoId,
+                etiquetaId
+        );
+    }
+
+    // Reto 1: eliminar asociación Producto-Etiqueta
+    @DeleteMapping("/{productoId}/etiquetas/{etiquetaId}")
+    public void eliminarEtiqueta(
+            @PathVariable Integer productoId,
+            @PathVariable Integer etiquetaId) {
+
+        productoService.eliminarEtiqueta(
+                productoId,
+                etiquetaId
+        );
     }
 }
